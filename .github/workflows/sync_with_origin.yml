@@ -1,0 +1,26 @@
+name: Sync with Origin Repository
+
+on:
+  repository_dispatch:
+    types:
+      - sync
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout B repository
+        uses: actions/checkout@v2
+        with:
+          target_branch: ${{github.event.client_payload.target_branch}}
+
+      - name: Add Organization Repository as Remote
+        run: |
+          git remote add org-repo https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/DangleDangle/dangledangle-client.git
+  
+      - name: Fetch Changes from Organization Repository
+        run: |
+          target_branch=${{github.event.client_payload.target_branch }}
+          git fetch org-repo ${target_branch}
+          git checkout -b ${target_branch}
+          git push origin ${target_branch} -f

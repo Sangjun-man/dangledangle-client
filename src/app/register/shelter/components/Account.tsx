@@ -26,7 +26,8 @@ export default function Account({ onNext }: OnNextProps) {
     register,
     formState: { errors },
     watch,
-    setError
+    setError,
+    setFocus
   } = useFormContext();
 
   const emailValue = watch('email');
@@ -44,6 +45,10 @@ export default function Account({ onNext }: OnNextProps) {
       debouncedValidator(emailValue, 'EMAIL');
     }
   }, [emailValue, debouncedValidator]);
+
+  useEffect(() => {
+    setFocus('email');
+  }, []);
 
   const areInputsFilled =
     Boolean(emailValue?.trim()) &&

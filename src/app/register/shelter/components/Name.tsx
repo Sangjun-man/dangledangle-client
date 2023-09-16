@@ -15,7 +15,8 @@ export default function Name({ onNext }: OnNextProps) {
     register,
     formState: { errors },
     watch,
-    setError
+    setError,
+    setFocus
   } = useFormContext();
   const nameValue = watch('name');
 
@@ -36,6 +37,10 @@ export default function Name({ onNext }: OnNextProps) {
       debouncedValidator(nameValue, 'NAME');
     }
   }, [nameValue, debouncedValidator]);
+
+  useEffect(() => {
+    setFocus('name');
+  }, []);
 
   return (
     <>

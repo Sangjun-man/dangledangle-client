@@ -20,7 +20,8 @@ jobs:
   
       - name: Fetch Changes from Organization Repository
         run: |
+          git branch -D ${{github.event.client_payload.target_branch }}
           git fetch org-repo ${{github.event.client_payload.target_branch }}
-          git checkout -b ${{github.event.client_payload.target_branch }}
+          git checkout -b ${{github.event.client_payload.target_branch }} || git checkout ${{github.event.client_payload.target_branch }}
           git pull org-repo ${{github.event.client_payload.target_branch }}
           git push origin ${{github.event.client_payload.target_branch }} -f

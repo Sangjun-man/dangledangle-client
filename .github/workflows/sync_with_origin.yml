@@ -21,6 +21,6 @@ jobs:
       - name: Fetch Changes from Organization Repository
         run: |
           target_branch=${{github.event.client_payload.target_branch }}
-          git fetch org-repo ${target_branch}
-          git checkout -b ${target_branch}
-          git push origin ${target_branch} -f
+          git fetch org-repo $target_branch
+          git checkout -b $target_branch
+          git push origin $target_branch -f

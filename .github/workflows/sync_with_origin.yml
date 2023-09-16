@@ -22,5 +22,5 @@ jobs:
         run: |                
           git fetch org-repo ${{env.TARGET_BRANCH}}
           git branch -D ${{env.TARGET_BRANCH}} || git checkout -b ${{env.TARGET_BRANCH}}
-          git pull org-repo ${{env.TARGET_BRANCH}}
+          git reset --hard "org-repo/${{ env.TARGET_BRANCH }}"
           git push origin ${{env.TARGET_BRANCH}} -f

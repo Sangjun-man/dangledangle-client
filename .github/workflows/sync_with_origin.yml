@@ -8,20 +8,19 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: ${{ github.event.client_payload.target_branch }}
     steps:
-      - name: Checkout B repository
+      - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          target_branch: ${{github.event.client_payload.target_branch}}
 
       - name: Add Organization Repository as Remote
         run: |
           git remote add org-repo https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/DangleDangle/dangledangle-client.git
   
       - name: Fetch Changes from Organization Repository
-        run: |
-          git branch -D ${{github.event.client_payload.target_branch }}
-          git fetch org-repo ${{github.event.client_payload.target_branch }}
-          git checkout -b ${{github.event.client_payload.target_branch }} || git checkout ${{github.event.client_payload.target_branch }}
-          git pull org-repo ${{github.event.client_payload.target_branch }}
-          git push origin ${{github.event.client_payload.target_branch }} -f
+        run: |                
+          git fetch org-repo ${{env.TARGET_BRANCH}}
+          git branch -D ${{env.TARGET_BRANCH}} || git checkout -b ${{env.TARGET_BRANCH}}
+          git pull org-repo ${{env.TARGET_BRANCH}}
+          git push origin ${{env.TARGET_BRANCH}} -f

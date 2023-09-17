@@ -3,13 +3,17 @@ import EmphasizedTitle, {
 } from '@/components/common/EmphasizedTitle/EmphasizedTitle';
 import TextField from '@/components/common/TextField/TextField';
 import { formatPhone } from '@/utils/formatInputs';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { CurrentComponentProps } from './CurrentComponentTypes';
 import * as style from './style.css';
 
 export default function ContactNumber({ formName }: CurrentComponentProps) {
-  const { register } = useFormContext();
+  const { register, setFocus } = useFormContext();
+  useEffect(() => {
+    formName && setFocus(formName);
+  }, []);
+
   const handlePhoneNumberChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;

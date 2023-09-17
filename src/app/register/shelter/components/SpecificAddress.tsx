@@ -7,15 +7,20 @@ import TextField from '@/components/common/TextField/TextField';
 import { useFormContext } from 'react-hook-form';
 import { OnNextProps } from '../page';
 import * as styles from './../styles.css';
+import { useEffect } from 'react';
 
 export default function SpecificAddress({ onNext }: OnNextProps) {
   const {
     register,
     formState: { errors },
-    watch
+    watch,
+    setFocus
   } = useFormContext();
   const addressValue = watch('address[addressDetail]');
 
+  useEffect(() => {
+    setFocus('address[addressDetail]');
+  }, []);
   return (
     <>
       <div className={styles.titleWrapper} style={{ marginBottom: '109px' }}>

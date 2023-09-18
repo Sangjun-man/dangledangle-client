@@ -40,9 +40,9 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (e) {
     const err = e as Error;
-    return NextResponse.json({
-      error: err.message,
-      status: 400
+    return new Response(null, {
+      status: 400,
+      statusText: err.message
     });
   }
 }

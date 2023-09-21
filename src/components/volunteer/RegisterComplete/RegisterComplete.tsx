@@ -36,7 +36,7 @@ export default function RegisterComplete() {
           <div className={styles.titleGroup}>
             <H2>가입완료!</H2>
             <div>
-              <H3>관심 있는 보소호를 발견하고</H3>
+              <H3>관심 있는 보호소를 발견하고</H3>
               <H3> 같이 세상을 바꿔볼까요?</H3>
             </div>
           </div>

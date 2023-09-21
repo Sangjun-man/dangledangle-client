@@ -13,13 +13,13 @@ import { COOKIE_ACCESS_TOKEN_KEY } from '@/constants/cookieKeys';
 import { cookies } from 'next/headers';
 
 export const metadata = {
-  metadataBase: new URL('https://dangledangle.vercel.app'),
+  metadataBase: new URL('https://dangle.co.kr'),
   title: '댕글댕글',
   description: '더 나은 세상을 만들어봐요!',
   openGraph: {
     title: '댕글댕글',
     description: '더 나은 세상을 만들어봐요!',
-    url: 'https://dangledangle.vercel.app',
+    url: 'https://dangle.co.kr',
     images: [
       {
         url: '/images/DangleShare.png',

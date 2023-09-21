@@ -33,6 +33,7 @@ interface HomeCalendarProps {
   setIsFolded: (isFolded: boolean) => void;
   bookmark: boolean;
   date: Date;
+  mark?: (string | Date)[];
   onClickDate: (value: Date) => void;
   onChangeBookmark: () => void;
 }
@@ -41,6 +42,7 @@ const HomeCalendar: React.FC<HomeCalendarProps> = ({
   setIsFolded,
   bookmark,
   date,
+  mark,
   onClickDate,
   onChangeBookmark
 }) => {
@@ -69,6 +71,7 @@ const HomeCalendar: React.FC<HomeCalendarProps> = ({
           <DangleCalendar
             id={CALENDAR_ID}
             value={date}
+            mark={mark}
             onChange={onClickDate}
             onChangeMonth={onClickDate}
           />

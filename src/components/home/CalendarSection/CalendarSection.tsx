@@ -25,6 +25,7 @@ import SkeletonList from '@/components/common/Skeleton/SkeletonList';
 import clsx from 'clsx';
 import { monthlyInfiniteOption } from '@/api/volunteer-event/queryOptions';
 import useShelterHomeEventList from '@/api/volunteer-event/useShelterHomeEventList';
+import moment from 'moment';
 
 export default function CalendarSection() {
   const { dangle_role } = useAuthContext();
@@ -134,6 +135,11 @@ export default function CalendarSection() {
     window.scrollTo({ top: scrollTo, behavior: 'smooth' });
   };
 
+  const eventDates = useMemo(
+    () => volunteerEvents?.map(e => moment(e.startAt).format('YYYY-MM-DD')),
+    [volunteerEvents]
+  );
+
   const fetchNextEvents = useCallback(async () => {
     let result;
     if (dangle_role === 'SHELTER') result = await shelterQuery.fetchNextPage();
@@ -178,6 +184,7 @@ export default function CalendarSection() {
           isFolded={isFolded}
           setIsFolded={setIsFolded}
           date={selectedDate}
+          mark={eventDates}
           onClickDate={setSelectedDate}
           bookmark={filterInput.isFavorite || false}
           onChangeBookmark={() =>

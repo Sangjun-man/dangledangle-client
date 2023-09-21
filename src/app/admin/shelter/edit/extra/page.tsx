@@ -199,7 +199,7 @@ export default function ShelterEditExtraPage() {
           />
           <div>
             <Caption2 color="gray600">
-              카카오페이 코드송금 링크를 입력하면, 원터치로 후원금 모금이
+              카카오페이 코드 송금 링크를 입력하면, 원터치로 후원금 모금이
               가능해요.
             </Caption2>
             <br />
@@ -207,9 +207,9 @@ export default function ShelterEditExtraPage() {
               className={textButton}
               element={'a'}
               color="primary300"
-              href={process.env.NEXT_PUBLIC_QNA_URL}
+              onClick={() => window.open(process.env.NEXT_PUBLIC_QNA_URL)}
             >
-              코드송금 링크는 어떻게 생성하나요?
+              코드 송금 링크는 어떻게 생성하나요?
             </Caption2>
           </div>
         </div>

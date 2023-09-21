@@ -22,7 +22,7 @@ export default function RegisterComplete() {
       <Image
         width={320}
         height={310}
-        src="/images/Particle.png"
+        src="/images/ParticleWidthLogo.png"
         alt="particle"
         style={{ zIndex: 1 }}
       />

@@ -33,10 +33,12 @@ export default function SpecificAddress({ onNext }: OnNextProps) {
         <TextField
           placeholder="우편번호를 입력해주세요."
           {...register('address[postalCode]')}
+          readOnly
         />
         <TextField
           placeholder="보호소 주소을 입력해주세요."
           {...register('address[address]')}
+          readOnly
         />
         <div>
           <TextField

@@ -10,17 +10,17 @@ import useBooleanState from '@/hooks/useBooleanState';
 import useDebounceValidator from '@/hooks/useDebounceValidator';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { OnNextProps } from '../page';
-import * as styles from './../styles.css';
+import { OnNextProps } from './page';
+import * as styles from '../styles.css';
 import { useRouter } from 'next/navigation';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { URL_PRIVACY_POLICY, URL_TERMS_OF_USE } from '@/constants/landingURL';
+import Cookies from 'js-cookie';
 
 type SingleCheckedKeys = 'over14' | 'terms' | 'privacy' | 'marketing';
 type SingleCheckedState = Record<SingleCheckedKeys, boolean>;
 
 export default function Account({ onNext }: OnNextProps) {
-  const router = useRouter();
   const [isSheet, isOpenSheet, isCloseSheet] = useBooleanState();
   const {
     register,

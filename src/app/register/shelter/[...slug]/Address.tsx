@@ -4,15 +4,15 @@ import EmphasizedTitle, {
 } from '@/components/common/EmphasizedTitle/EmphasizedTitle';
 import AddressSearchBar from '@/components/shelter-edit/AddressSearchBar/AddressSearchBar';
 import useHeader from '@/hooks/useHeader';
-import { use, useCallback, useEffect, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { OnNextProps } from '../page';
-import * as styles from './../styles.css';
 import { SearchedAddress } from '@/types/shelter';
+import { useCallback, useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import * as styles from '../styles.css';
+import { OnNextProps } from './page';
 
 export default function Address({ onNext }: OnNextProps) {
   const { setValue, setFocus } = useFormContext();
-  const setHeader = useHeader({
+  useHeader({
     thisPage: 3,
     entirePage: 4
   });

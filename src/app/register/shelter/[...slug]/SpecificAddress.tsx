@@ -5,8 +5,8 @@ import EmphasizedTitle, {
 import Message from '@/components/common/TextField/Message/Message';
 import TextField from '@/components/common/TextField/TextField';
 import { useFormContext } from 'react-hook-form';
-import { OnNextProps } from '../page';
-import * as styles from './../styles.css';
+import { OnNextProps } from './page';
+import * as styles from '../styles.css';
 import { useEffect } from 'react';
 
 export default function SpecificAddress({ onNext }: OnNextProps) {

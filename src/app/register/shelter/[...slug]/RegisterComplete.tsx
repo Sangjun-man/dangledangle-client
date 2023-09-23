@@ -1,13 +1,11 @@
 import Button from '@/components/common/Button/Button';
 import { H2, H3 } from '@/components/common/Typography';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import * as styles from './../styles.css';
+import * as styles from '../styles.css';
 import { DaenggleLogo } from '@/asset/icons';
 import useHeader from '@/hooks/useHeader';
 
 export default function RegisterComplete() {
-  const router = useRouter();
   useHeader({ isHeader: 'hidden' });
   return (
     <div className={styles.finish}>

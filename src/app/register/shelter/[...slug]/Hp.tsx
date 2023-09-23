@@ -7,8 +7,8 @@ import useHeader from '@/hooks/useHeader';
 import { formatPhone } from '@/utils/formatInputs';
 import { use, useCallback, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { OnNextProps } from '../page';
-import * as styles from './../styles.css';
+import { OnNextProps } from './page';
+import * as styles from '../styles.css';
 
 export default function Hp({ onNext }: OnNextProps) {
   const {

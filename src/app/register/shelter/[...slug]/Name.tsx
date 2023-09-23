@@ -7,8 +7,9 @@ import useDebounceValidator from '@/hooks/useDebounceValidator';
 import useHeader from '@/hooks/useHeader';
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { OnNextProps } from '../page';
-import * as styles from './../styles.css';
+import { OnNextProps } from './page';
+import * as styles from '../styles.css';
+import Cookies from 'js-cookie';
 
 export default function Name({ onNext }: OnNextProps) {
   const {
@@ -37,6 +38,9 @@ export default function Name({ onNext }: OnNextProps) {
       debouncedValidator(nameValue, 'NAME');
     }
   }, [nameValue, debouncedValidator]);
+  useEffect(() => {
+    Cookies.set('step', 'processing');
+  }, []);
 
   useEffect(() => {
     setFocus('name');

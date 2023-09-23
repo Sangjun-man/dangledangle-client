@@ -34,7 +34,7 @@ export default function ShelterPassword() {
     resolver: yupResolver(passWordFindValidation)
   });
 
-  const setHeader = useHeader({ title: '비밀번호 찾기' });
+  useHeader({ title: '비밀번호 찾기' });
   const toastOn = useToast();
 
   useEffect(() => {
@@ -60,9 +60,9 @@ export default function ShelterPassword() {
 
   const handleSendPassLink = async () => {
     try {
-      toastOn('비밀번호 재설정 링크가 전송되었습니다.');
+      toastOn('비밀번호 재설정 링크가 발송되었습니다.');
     } catch (error) {
-      toastOn('비밀번호 재설정 링크를 전송하는 데 실패했습니다.');
+      toastOn('알 수 없는 오류가 발생했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -75,7 +75,6 @@ export default function ShelterPassword() {
         </EmphasizedTitle>
       </div>
       <TextField
-        maxLength={10}
         helper={helperMessage}
         placeholder="등록하신 이메일을 입력해주세요."
         {...register('email')}
@@ -85,6 +84,7 @@ export default function ShelterPassword() {
           }
         }}
         error={errors.email}
+        autoFocus
       />
       <Button
         style={{ marginTop: '47px' }}

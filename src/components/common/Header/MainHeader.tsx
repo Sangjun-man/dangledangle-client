@@ -6,9 +6,8 @@ import * as styles from './Header.css';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { palette } from '@/styles/color';
 import { UserRole } from '@/constants/user';
-import useObserver from '@/hooks/useObserver';
 import { DOM_ID_BANNER } from '@/constants/dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuthContext } from '@/providers/AuthContext';
 
 interface MainHeaderProps {
@@ -18,6 +17,7 @@ interface MainHeaderProps {
 
 export default function MainHeader({ initRole, shelterId }: MainHeaderProps) {
   const router = useRouter();
+  const headerRef = useRef<HTMLElement>(null);
   const [role, setRole] = useState(initRole);
   const { dangle_role } = useAuthContext();
   const refresh = () => {
@@ -52,25 +52,31 @@ export default function MainHeader({ initRole, shelterId }: MainHeaderProps) {
     }
   }, [initRole, role, dangle_role]);
 
-  const { toggle } = useObserver(DOM_ID_BANNER);
+  const checkIntersect = useCallback(
+    (threshold: number) => async () => {
+      const header = headerRef.current;
+      if (!header) return;
+      if (window.scrollY > threshold) {
+        header.classList.add(styles.headerColorOn);
+        header.classList.remove(styles.headerColorOff);
+      } else {
+        header.classList.remove(styles.headerColorOn);
+        header.classList.add(styles.headerColorOff);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    const header = document.getElementById('main_header');
-    if (!header) return;
-    const on = () => {
-      header.classList.add(styles.headerColorOn);
-      header.classList.remove(styles.headerColorOff);
-    };
-    const off = () => {
-      header.classList.remove(styles.headerColorOn);
-      header.classList.add(styles.headerColorOff);
-    };
-    toggle(on, off);
+    const banner = document.getElementById(DOM_ID_BANNER);
+    if (!banner) return;
+    const { height } = banner.getBoundingClientRect();
+    window.addEventListener('scroll', checkIntersect(height));
   }, []);
 
   return (
     <nav
-      id="main_header"
+      ref={headerRef}
       className={styles.container}
       style={assignInlineVars({
         [styles.headerColor]: palette.background

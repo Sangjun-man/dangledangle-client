@@ -23,13 +23,13 @@ export default function MainHeader({ initRole, shelterId }: MainHeaderProps) {
   const refresh = () => {
     location.reload();
   };
-  const moveToMypage = () => {
-    const path = '/admin';
-    router.push(path);
-  };
 
-  const moveToLogin = () => {
-    if (role === 'NONE') router.push('/login');
+  const handleClick = () => {
+    if (role === 'NONE') {
+      router.push('/login');
+    } else {
+      router.push('/admin');
+    }
   };
 
   const content = useMemo(() => {
@@ -81,14 +81,11 @@ export default function MainHeader({ initRole, shelterId }: MainHeaderProps) {
       </a>
 
       <div className={styles.rightSide}>
-        <Body3
-          style={{ cursor: role === 'NONE' ? 'pointer' : 'default' }}
-          onClick={moveToLogin}
-        >
+        <Body3 style={{ cursor: 'pointer' }} onClick={handleClick}>
           {content}
         </Body3>
         {(role === 'SHELTER' || role === 'VOLUNTEER') && (
-          <a className={styles.myPageIcon} onClick={moveToMypage}>
+          <a className={styles.myPageIcon}>
             <Body4 color="gray600">MY</Body4>
           </a>
         )}

@@ -9,6 +9,7 @@ import { UserRole } from '@/constants/user';
 import { DOM_ID_BANNER } from '@/constants/dom';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuthContext } from '@/providers/AuthContext';
+import useSafariBackgroundControll from '@/hooks/useSafariBackgroundControll';
 
 interface MainHeaderProps {
   initRole?: UserRole;
@@ -19,6 +20,7 @@ export default function MainHeader({ initRole, shelterId }: MainHeaderProps) {
   const router = useRouter();
   const headerRef = useRef<HTMLElement>(null);
   const [role, setRole] = useState(initRole);
+  const { setSafariBackground } = useSafariBackgroundControll();
   const { dangle_role } = useAuthContext();
   const refresh = () => {
     location.reload();
@@ -59,12 +61,14 @@ export default function MainHeader({ initRole, shelterId }: MainHeaderProps) {
       if (window.scrollY > threshold) {
         header.classList.add(styles.headerColorOn);
         header.classList.remove(styles.headerColorOff);
+        setSafariBackground(palette.white);
       } else {
         header.classList.remove(styles.headerColorOn);
         header.classList.add(styles.headerColorOff);
+        setSafariBackground(palette.background);
       }
     },
-    []
+    [setSafariBackground]
   );
 
   useEffect(() => {
@@ -72,7 +76,7 @@ export default function MainHeader({ initRole, shelterId }: MainHeaderProps) {
     if (!banner) return;
     const { height } = banner.getBoundingClientRect();
     window.addEventListener('scroll', checkIntersect(height));
-  }, []);
+  }, [checkIntersect]);
 
   return (
     <nav

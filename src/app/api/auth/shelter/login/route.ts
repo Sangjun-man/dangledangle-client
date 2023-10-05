@@ -1,6 +1,7 @@
 import { loginShelter } from '@/api/shelter/auth/login';
 import {
   COOKIE_ACCESS_TOKEN_KEY,
+  COOKIE_REDIRECT_URL,
   COOKIE_REFRESH_TOKEN_KEY
 } from '@/constants/cookieKeys';
 import { decrypt } from '@/utils/passwordCrypto';
@@ -22,10 +23,12 @@ export async function POST(req: NextRequest) {
     if (!email || !password) {
       throw new Error('이메일과 비밀번호를 입력해주세요.');
     }
-    const { accessToken, refreshToken } = await loginShelter({
-      email,
-      password
-    });
+    const { accessToken, refreshToken, needToChangePassword } =
+      await loginShelter({
+        email,
+        password
+      });
+
     const res = NextResponse.json({
       redirectURI: redirectTo,
       success: true,
@@ -34,7 +37,9 @@ export async function POST(req: NextRequest) {
     });
 
     const cookieConfig = getCookieConfig(req);
-
+    if (needToChangePassword) {
+      res.cookies.set(COOKIE_REDIRECT_URL, '/admin');
+    }
     res.cookies.set(COOKIE_ACCESS_TOKEN_KEY, accessToken, cookieConfig);
     res.cookies.set(COOKIE_REFRESH_TOKEN_KEY, refreshToken, cookieConfig);
     return res;

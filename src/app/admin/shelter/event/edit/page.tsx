@@ -1,6 +1,17 @@
 'use client';
 
+import useAdminVolunteerEvent from '@/api/shelter/admin/useAdminVolunteerEvent';
+import useUpdateVolunteerEvent from '@/api/shelter/admin/useUpdateVolunteerEvent';
+import {
+  PutVolunteerEventPayload,
+  VolunteerEventPayload,
+  post
+} from '@/api/shelter/admin/volunteer-event';
+import Button from '@/components/common/Button/Button';
 import ChipInput from '@/components/common/ChipInput/ChipInput';
+import FixedFooter from '@/components/common/FixedFooter/FixedFooter';
+import TextArea from '@/components/common/TextField/TextArea';
+import TextField from '@/components/common/TextField/TextField';
 import {
   ButtonText1,
   Caption1,
@@ -14,29 +25,19 @@ import {
   IterationCycle,
   VolunteerEventCategory
 } from '@/constants/volunteerEvent';
-import { useEffect, useMemo, useState } from 'react';
-import * as styles from './styles.css';
-import { useForm } from 'react-hook-form';
+import useHeader from '@/hooks/useHeader';
+import { formatDatetimeForServer } from '@/utils/timeConvert';
 import yup from '@/utils/yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import TextField from '@/components/common/TextField/TextField';
-import TextArea from '@/components/common/TextField/TextArea';
-import FixedFooter from '@/components/common/FixedFooter/FixedFooter';
-import Button from '@/components/common/Button/Button';
-import moment from 'moment';
-import getMaxOfIterationEndAt from './utils/getMaxOfIterationEndAt';
-import getIterationNotice from './utils/getIterationNotice';
 import { isEmpty } from 'lodash';
-import { formatDatetimeForServer } from '@/utils/timeConvert';
-import {
-  PutVolunteerEventPayload,
-  VolunteerEventPayload,
-  post,
-  put
-} from '@/api/shelter/admin/volunteer-event';
-import useAdminVolunteerEvent from '@/api/shelter/admin/useAdminVolunteerEvent';
+import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import useHeader from '@/hooks/useHeader';
+import { useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as styles from './styles.css';
+import getIterationNotice from './utils/getIterationNotice';
+import getMaxOfIterationEndAt from './utils/getMaxOfIterationEndAt';
+import useWriteVolunteerEvent from '@/api/shelter/admin/useWriteVolunteerEvent';
 
 type ChipValues = {
   category: string;
@@ -220,13 +221,16 @@ export default function ShelterEventEditPage({
     return payload;
   };
 
+  const { mutateAsync: putEvent } = useUpdateVolunteerEvent();
+  const { mutateAsync: postEvent } = useWriteVolunteerEvent();
+
   const onSubmit = async (values: FormValues) => {
     if (initialData) {
       const payload = getPutPayload(values);
-      await put(eventId, payload);
+      await putEvent({ eventId, ...payload });
     } else {
       const payload = getPostPayload(values);
-      await post(payload);
+      await postEvent(payload);
     }
     router.back();
   };

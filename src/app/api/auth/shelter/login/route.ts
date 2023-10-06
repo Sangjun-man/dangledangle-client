@@ -4,6 +4,7 @@ import {
   COOKIE_REDIRECT_URL,
   COOKIE_REFRESH_TOKEN_KEY
 } from '@/constants/cookieKeys';
+import { URL_PASSWORD_CHANGE } from '@/constants/landingURL';
 import { decrypt } from '@/utils/passwordCrypto';
 import { getCookieConfig } from '@/utils/token/cookieConfig';
 import { NextRequest, NextResponse } from 'next/server';
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     const cookieConfig = getCookieConfig(req);
     if (needToChangePassword) {
-      res.cookies.set(COOKIE_REDIRECT_URL, '/admin');
+      res.cookies.set(COOKIE_REDIRECT_URL, URL_PASSWORD_CHANGE);
     }
     res.cookies.set(COOKIE_ACCESS_TOKEN_KEY, accessToken, cookieConfig);
     res.cookies.set(COOKIE_REFRESH_TOKEN_KEY, refreshToken, cookieConfig);

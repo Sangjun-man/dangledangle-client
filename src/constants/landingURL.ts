@@ -6,3 +6,4 @@ export const URL_FAQ =
   'https://dankim9494.notion.site/FAQ-2c54d818708f454cb4f094d62c3bd4d0?pvs=4';
 export const URL_SERVICE_INTRODUCTION =
   'https://dankim9494.notion.site/91e59199f72c41c3842320bf2232c3f4?pvs=4';
+export const URL_PASSWORD_CHANGE = '/admin/shelter/edit/password';

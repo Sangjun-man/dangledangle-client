@@ -11,15 +11,23 @@ export type LoginResponse = {
   refreshToken: string;
   needToChangePassword: boolean;
 };
-export interface fowardPwdPayload {
+export interface FowardPwdPayload {
   email: string;
   phoneNumber: string;
 }
 
-export type fowardPwdResponse = {
+export type FowardPwdResponse = {
   shelterUserId: number;
   needToChangePassword: boolean;
 };
+
+export interface PwdChangePayload {
+  password: string;
+}
+export interface PwdChangeResponse {
+  shelterUserId: number;
+  needToChangePassword: boolean;
+}
 
 export const loginShelter = async (data: LoginPayload) => {
   const response = await api
@@ -39,12 +47,22 @@ export const isExist = async (value: string, type: string) => {
   return response;
 };
 
-export const fowardPwdLink = async (data: fowardPwdPayload) => {
+export const fowardPwdLink = async (data: FowardPwdPayload) => {
   const response = await api
     .post(`auth/shelter/reset-password`, {
       json: data
     })
-    .then(res => res.json<fowardPwdResponse>());
+    .then(res => res.json<FowardPwdResponse>());
+
+  return response;
+};
+
+export const pwdChange = async (data: PwdChangePayload) => {
+  const response = await api
+    .post(`auth/shelter/change-password`, {
+      json: data
+    })
+    .then(res => res.json<PwdChangeResponse>());
 
   return response;
 };

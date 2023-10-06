@@ -39,6 +39,25 @@ export const passWordFindValidation = yup.object().shape({
     )
 });
 
+export const passwordChangeValidatgion = yup.object().shape({
+  password: yup
+    .string()
+    .min(8, '비밀번호가 너무 짧습니다. 8~15자로 입력해주세요.')
+    .max(15, '비밀번호가 너무 깁니다. 8~15자로 입력해주세요.')
+    .test(
+      'password',
+      '영문, 숫자, 특수문자 중 2가지 조합으로 8~15자로 입력해주세요.',
+      value => {
+        const matches = checkPwd(value);
+        return matches;
+      }
+    ),
+  passwordConfirm: yup
+    .string()
+    .required()
+    .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.')
+});
+
 export const registerValidation = yup.object({
   email: yup.string().email('올바른 이메일 형식이 아닙니다.'),
   password: yup

@@ -118,6 +118,13 @@ export default function ShelterEditPage() {
       </section>
       <section>
         <EditMenu
+          title="비밀번호 변경"
+          caption=""
+          onClick={() => router.push(location.pathname + '/password')}
+        />
+        <Divider spacing={18} />
+
+        <EditMenu
           title="필수 정보"
           caption="보호소 이름 / 연락처 / 주소 / 소개문구"
           titleSuffix={MenuBadge(true)}

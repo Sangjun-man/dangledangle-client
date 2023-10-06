@@ -11,6 +11,7 @@ import * as styles from './layout.css';
 import Footer from '@/components/common/Footer/Footer';
 import { COOKIE_ACCESS_TOKEN_KEY } from '@/constants/cookieKeys';
 import { cookies } from 'next/headers';
+import SafariBackGround from '@/components/global/Meta/SafariBackGround';
 
 export const metadata = {
   metadataBase: new URL('https://dangle.co.kr'),
@@ -45,6 +46,7 @@ export default function RootLayout({
 
   return (
     <html lang="ko" className={font.className}>
+      <SafariBackGround />
       <body className={styles.container}>
         <RecoilRootWrapper>
           <QueryProvider>

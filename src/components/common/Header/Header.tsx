@@ -37,7 +37,8 @@ export default function Header({
   const router = useRouter();
   const pathName = usePathname();
   const navigate = () => {
-    router.back();
+    // 웹페이지 처음 방문 했을 시 window.history.length === 1
+    history.length === 1 ? router.push('/') : router.back();
   };
 
   const headerColor = useMemo(() => {

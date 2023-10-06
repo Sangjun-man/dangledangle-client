@@ -90,7 +90,7 @@ globalStyle(`${calendar} .react-calendar__month-view__weekdays`, {
   fontSize: '12px',
   fontFamily: 'Pretendard',
   fontStyle: 'normal',
-  fontWeight: 500,
+  fontWeight: 700,
   lineHeight: '14px',
   color: '#6c6c6c',
   textAlign: 'center'
@@ -98,7 +98,8 @@ globalStyle(`${calendar} .react-calendar__month-view__weekdays`, {
 
 // 날짜 container
 globalStyle(`${calendar} .react-calendar__month-view__days`, {
-  padding: '0px 12px 0px 12px'
+  padding: '0px 12px 0px 12px',
+  width: '100%'
 });
 
 globalStyle(`${calendar} .react-calendar__tile`, {
@@ -110,7 +111,7 @@ globalStyle(`${calendar} .react-calendar__tile`, {
   fontSize: '12px',
   fontFamily: 'Pretendard',
   fontStyle: 'normal',
-  fontWeight: 500,
+  fontWeight: 600,
   lineHeight: '14px',
   color: '#6c6c6c',
 

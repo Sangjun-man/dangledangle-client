@@ -28,6 +28,11 @@ export const metadata = {
         alt: '댕글댕글'
       }
     ]
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1
   }
 };
 

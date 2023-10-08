@@ -14,7 +14,6 @@ import useBooleanState from '@/hooks/useBooleanState';
 import useDialog from '@/hooks/useDialog';
 import useToast from '@/hooks/useToast';
 import useDeleteObservationAnimal from '@/api/shelter/admin/useDeleteObservationAnimal';
-import useObservationAnimalList from '@/api/shelter/admin/useObservationAnimalList';
 import useShelterInfo from '@/api/shelter/admin/useShelterInfo';
 import { OUT_LINK_TYPE } from '@/constants/shelter';
 import useImageUploader from '@/hooks/useImageUploader';
@@ -23,6 +22,7 @@ import useHeader from '@/hooks/useHeader';
 import { ObservationAnimal, ShelterAdditionalInfo } from '@/types/shelter';
 import FixedFooter from '@/components/common/FixedFooter/FixedFooter';
 import RegisterComplete from '@/app/register/shelter/[...slug]/RegisterComplete';
+import useObservationAnimalListAtHome from '@/api/shelter/{shelterId}/useObservationAnimalList';
 
 export default function ShelterEditPage() {
   useHeader({ title: '보호소 정보' });
@@ -36,8 +36,11 @@ export default function ShelterEditPage() {
   const [targetAnimal, setTargetAnimal] = useState<ObservationAnimal>();
   const [registerCompleted, setRegisterCompleted] = useState<Boolean>(false);
 
-  const animalsQuery = useObservationAnimalList();
   const shelterQuery = useShelterInfo();
+  const animalsQuery = useObservationAnimalListAtHome(
+    { shelterId: shelterQuery.data?.id || -1, page: 0 },
+    { enabled: Boolean(shelterQuery.data?.id) }
+  );
   const { mutateAsync: deleteAnimal } = useDeleteObservationAnimal();
   const { mutateAsync: updateImage } = useUpdateImage();
 
@@ -72,7 +75,7 @@ export default function ShelterEditPage() {
 
   const handleClickEdit = (idx: number) => {
     if (animalsQuery.data) {
-      setTargetAnimal(animalsQuery.data[idx]);
+      setTargetAnimal(animalsQuery.data.content[idx]);
       openDialog();
     }
   };
@@ -149,12 +152,12 @@ export default function ShelterEditPage() {
           titleSuffix={
             <H4
               color={
-                animalsQuery.data && animalsQuery.data.length > 0
+                animalsQuery.data && animalsQuery.data.content.length > 0
                   ? 'primary300'
                   : 'gray400'
               }
             >
-              {animalsQuery.data?.length || 0}
+              {animalsQuery.data?.content.length || 0}
             </H4>
           }
         />
@@ -168,7 +171,7 @@ export default function ShelterEditPage() {
         </Button>
         {animalsQuery.isSuccess && (
           <div className={styles.animalList}>
-            {animalsQuery.data.map((animal, idx) => (
+            {animalsQuery.data.content.map((animal, idx) => (
               <AnimalCard
                 key={animal.id}
                 data={animal}

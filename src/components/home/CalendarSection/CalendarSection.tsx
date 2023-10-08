@@ -29,12 +29,12 @@ import useShelterHomeEventList from '@/api/volunteer-event/useShelterHomeEventLi
 import moment from 'moment';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { EventStatus } from '@/types/volunteerEvent';
+import { STORAGE_KEY_HOME_CALENDAR_FILTER_INPUT } from '@/constants/localStorageKeys';
 
-const FILTER_INPUT_STORAGE_KEY = 'home_event_filter_input';
 export default function CalendarSection() {
   const { dangle_role } = useAuthContext();
   const filterInputStorage = useLocalStorage<HomeEventFilter>(
-    FILTER_INPUT_STORAGE_KEY
+    STORAGE_KEY_HOME_CALENDAR_FILTER_INPUT
   );
   const [filterInput, setFilterInput] = useState<HomeEventFilter>({
     address: '내 주변',

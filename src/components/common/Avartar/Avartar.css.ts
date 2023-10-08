@@ -8,7 +8,8 @@ export const avartar = recipe({
     border: `1px solid ${palette.gray300}`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
+    backgroundRepeat: 'no-repeat',
+    objectFit: 'cover'
   },
   variants: {
     shape: {

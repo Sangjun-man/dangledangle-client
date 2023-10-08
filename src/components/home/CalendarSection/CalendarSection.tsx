@@ -161,7 +161,10 @@ export default function CalendarSection() {
   useEffect(() => {
     // 로컬 스토리지에 저장된 filterInput으로 초기화
     const savedFilter = filterInputStorage.get();
-    if (!savedFilter) return;
+    if (!savedFilter) {
+      filterInputStorage.save(filterInput);
+      return;
+    }
     setFilterInput(savedFilter);
 
     // 모집 상태 또는 지역 Filter의 pickOption 값 초기화

@@ -16,8 +16,10 @@ export default function useLocalStorage<T>(key: string) {
 
         const parsed = JSON.parse(item);
         save({ ...parsed, ...json });
+        return true;
       } catch {
         console.error(`'${key}' 키값에 해당하는 localStorage 값이 없습니다`);
+        return false;
       }
     },
     [key, save]

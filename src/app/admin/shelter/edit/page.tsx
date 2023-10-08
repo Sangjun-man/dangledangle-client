@@ -19,7 +19,7 @@ import { OUT_LINK_TYPE } from '@/constants/shelter';
 import useImageUploader from '@/hooks/useImageUploader';
 import useUpdateImage from '@/api/shelter/admin/useUpdateImage';
 import useHeader from '@/hooks/useHeader';
-import { ObservationAnimal, ShelterAdditionalInfo } from '@/types/shelter';
+import { ObservationAnimal, ShelterInfo } from '@/types/shelter';
 import FixedFooter from '@/components/common/FixedFooter/FixedFooter';
 import RegisterComplete from '@/app/register/shelter/[...slug]/RegisterComplete';
 import useObservationAnimalListAtHome from '@/api/shelter/{shelterId}/useObservationAnimalList';
@@ -85,19 +85,35 @@ export default function ShelterEditPage() {
     openDialog();
   };
 
-  const isAddtionalInfoCompleted = (info: ShelterAdditionalInfo) => {
-    if (info.outLinks.length !== Object.keys(OUT_LINK_TYPE).length)
-      return false;
-    return !Object.values(info).includes(null);
+  const getAdditionalInfoStatus = (info: ShelterInfo) => {
+    const isOutlinkCompleted =
+      info.outLinks.length === Object.keys(OUT_LINK_TYPE).length;
+    const isCompleted =
+      info.parkingInfo && info.bankAccount && info.notice && isOutlinkCompleted;
+    const isInProgress =
+      info.parkingInfo ||
+      info.bankAccount ||
+      info.notice ||
+      info.outLinks.length > 0;
+
+    return isCompleted
+      ? 'completed'
+      : isInProgress
+      ? 'in_progress'
+      : 'not_entered';
   };
 
   const handleClickCompleteRegister = () => {
     setRegisterCompleted(true);
   };
 
-  const MenuBadge = (isCompleted: boolean) => (
-    <Badge type={isCompleted ? 'success' : 'gray'}>
-      {isCompleted ? '입력 완료' : '미입력'}
+  const MenuBadge = (status: ReturnType<typeof getAdditionalInfoStatus>) => (
+    <Badge type={status === 'completed' ? 'success' : 'gray'}>
+      {status === 'completed'
+        ? '입력 완료'
+        : status === 'in_progress'
+        ? '입력중'
+        : '미입력'}
     </Badge>
   );
 
@@ -130,7 +146,7 @@ export default function ShelterEditPage() {
         <EditMenu
           title="필수 정보"
           caption="보호소 이름 / 연락처 / 주소 / 소개문구"
-          titleSuffix={MenuBadge(true)}
+          titleSuffix={MenuBadge('completed')}
           onClick={() => router.push(location.pathname + '/required')}
         />
         <Divider spacing={18} />
@@ -138,8 +154,9 @@ export default function ShelterEditPage() {
           title="추가 정보"
           caption="SNS계정 / 후원 계좌 정보 / 주차 정보 / 사전 안내사항"
           titleSuffix={MenuBadge(
-            shelterQuery.isSuccess &&
-              isAddtionalInfoCompleted(shelterQuery.data)
+            shelterQuery.isSuccess
+              ? getAdditionalInfoStatus(shelterQuery.data)
+              : 'not_entered'
           )}
           onClick={() => router.push(location.pathname + '/extra')}
         />

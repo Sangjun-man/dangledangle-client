@@ -6,6 +6,7 @@ import HomeCalendar, {
 } from '@/components/home/HomeCalendar/HomeCalendar';
 import {
   CATEGORY_OPTIONS,
+  EVENT_STATUS_FILTER,
   EVENT_STATUS_FILTER_OPTIONS,
   REGION_OPTIONS
 } from '@/constants/volunteerEvent';
@@ -26,9 +27,15 @@ import clsx from 'clsx';
 import { monthlyInfiniteOption } from '@/api/volunteer-event/queryOptions';
 import useShelterHomeEventList from '@/api/volunteer-event/useShelterHomeEventList';
 import moment from 'moment';
+import useLocalStorage from '@/hooks/useLocalStorage';
+import { EventStatus } from '@/types/volunteerEvent';
 
+const FILTER_INPUT_STORAGE_KEY = 'home_event_filter_input';
 export default function CalendarSection() {
   const { dangle_role } = useAuthContext();
+  const filterInputStorage = useLocalStorage<HomeEventFilter>(
+    FILTER_INPUT_STORAGE_KEY
+  );
   const [filterInput, setFilterInput] = useState<HomeEventFilter>({
     address: '내 주변',
     category: 'all',
@@ -37,7 +44,7 @@ export default function CalendarSection() {
   });
   const [loading, loadingOn, loadingOff] = useBooleanState(true);
   const [geolocation, setGeolocation] = useState<GeolocationPosition>();
-  const regionFilterRef = useRef<FilterRef>(null);
+  const filterRef = useRef<FilterRef>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const [isFolded, setIsFolded] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -83,17 +90,21 @@ export default function CalendarSection() {
         ...prev,
         [name]: value
       }));
+
+      // 로컬 스토리지를 filterInput과 동기화시킨다
+      filterInputStorage.update({ [name]: value });
     },
-    []
+    [filterInputStorage]
   );
 
   useEffect(() => {
     if (dangle_role !== 'SHELTER' && filterInput.address === '내 주변') {
+      // 사용자 위치 정보 받아오기
       loadingOn();
       getUserGeolocation()
         .then(setGeolocation)
         .catch(() => {
-          regionFilterRef.current?.setPickOption(REGION_OPTIONS[0]);
+          filterRef.current?.setPickOption(REGION_OPTIONS[0]);
           setFilterInput(prev => ({ ...prev, address: REGION_OPTIONS[0] }));
         })
         .finally(loadingOff);
@@ -147,15 +158,40 @@ export default function CalendarSection() {
     return { hasNext: Boolean(result.hasNextPage) };
   }, [dangle_role, query, shelterQuery]);
 
+  useEffect(() => {
+    // 로컬 스토리지에 저장된 filterInput으로 초기화
+    const savedFilter = filterInputStorage.get();
+    if (!savedFilter) return;
+    setFilterInput(savedFilter);
+
+    // 모집 상태 또는 지역 Filter의 pickOption 값 초기화
+    if (filterRef.current?.name === 'address') {
+      filterRef.current.setPickOption(savedFilter.address || '내 주변');
+    } else if (filterRef.current?.name === 'status') {
+      const pickOption =
+        EVENT_STATUS_FILTER[
+          (savedFilter.status as Exclude<EventStatus, 'CANCELED'>) || 'all'
+        ];
+      filterRef.current.setPickOption(pickOption);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div>
       <div className={styles.title}>
-        <H3> 봉사 일정을 둘러봐요 🙌 </H3>
+        <H3>
+          {dangle_role === 'SHELTER'
+            ? '우리 보호소 봉사 일정이에요'
+            : '봉사 일정을 둘러봐요'}
+          &nbsp;🙌
+        </H3>
       </div>
       <div ref={stickyRef} className={clsx(styles.sticky, 'sticky')}>
         <div className={styles.filterContainer}>
           {(dangle_role === 'SHELTER' && (
             <Filter
+              ref={filterRef}
               label="모집 상태"
               name="status"
               options={EVENT_STATUS_FILTER_OPTIONS}
@@ -163,7 +199,7 @@ export default function CalendarSection() {
             />
           )) || (
             <Filter
-              ref={regionFilterRef}
+              ref={filterRef}
               label="지역"
               name="address"
               options={['내 주변', ...REGION_OPTIONS]}

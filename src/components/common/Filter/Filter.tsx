@@ -43,6 +43,7 @@ interface FilterProps {
 
 export interface FilterRef {
   setPickOption: (option: string) => void;
+  name: string;
 }
 const Filter = forwardRef<FilterRef, FilterProps>(
   ({ name, label, options, onChange }: FilterProps, ref) => {
@@ -57,7 +58,8 @@ const Filter = forwardRef<FilterRef, FilterProps>(
     }, [name]);
 
     useImperativeHandle(ref, () => ({
-      setPickOption
+      setPickOption,
+      name
     }));
 
     const handleChangeData = useCallback(

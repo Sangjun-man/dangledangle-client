@@ -7,3 +7,5 @@ export const URL_SERVICE_INTRODUCTION =
 export const URL_PASSWORD_CHANGE = '/admin/shelter/edit/password';
 export const URL_FAQ =
   'https://dankim9494.notion.site/FAQ-2c54d818708f454cb4f094d62c3bd4d0?pvs=4';
+export const URL_ONETOONE =
+  'mailto:dangledangle.official@gmail.com?subject=[1:1 문의]';

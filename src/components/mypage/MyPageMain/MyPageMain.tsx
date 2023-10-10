@@ -8,13 +8,13 @@ import {
   MypageTerms
 } from '@/asset/icons';
 import { Body1, ButtonText2 } from '@/components/common/Typography';
+import { URL_ONETOONE, URL_TERMS_OF_USE } from '@/constants/landingURL';
 import useDialog from '@/hooks/useDialog';
 import useHeader from '@/hooks/useHeader';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import * as styles from './MyPageMain.css';
-import { URL_FAQ, URL_TERMS_OF_USE } from '@/constants/landingURL';
 
 export interface MyPageMainProps {
   isShelterRole: boolean;
@@ -66,7 +66,7 @@ export default function MyPageMain({
     },
     {
       label: '문의하기',
-      link: URL_FAQ,
+      link: URL_ONETOONE,
       Svg: MypageChat
     },
     {

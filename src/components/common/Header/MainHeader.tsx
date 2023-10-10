@@ -90,10 +90,8 @@ export default function MainHeader({ initRole, shelterId }: MainHeaderProps) {
         <MainLogo />
       </a>
 
-      <div className={styles.rightSide}>
-        <Body3 style={{ cursor: 'pointer' }} onClick={handleClick}>
-          {content}
-        </Body3>
+      <div className={styles.rightSide} onClick={handleClick}>
+        <Body3 style={{ cursor: 'pointer' }}>{content}</Body3>
         {(role === 'SHELTER' || role === 'VOLUNTEER') && (
           <a className={styles.myPageIcon}>
             <Body4 color="gray600">MY</Body4>

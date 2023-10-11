@@ -12,6 +12,7 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import * as styles from './style.css';
 import { useRouter } from 'next/navigation';
+import useLogout from '@/api/mypage/useLogout';
 
 interface PasswordChangePageProps {}
 
@@ -41,6 +42,8 @@ export default function PasswordChangePage({}: PasswordChangePageProps) {
     Boolean(getValues('password')?.trim()) &&
     Boolean(getValues('passwordConfirm')?.trim());
 
+  const { mutate: logout } = useLogout();
+
   const handlePasswordChange = useCallback(
     async (data: PassChangeFormValue) => {
       const newData = {
@@ -49,8 +52,9 @@ export default function PasswordChangePage({}: PasswordChangePageProps) {
 
       try {
         await pwdChange(newData);
-        toastOn('비밀번호가 변경되었습니다. 홈 화면으로 이동합니다.');
-        router.push('/');
+        logout();
+        toastOn('비밀번호가 변경되었습니다. 로그인 화면으로 이동합니다.');
+        router.push('/login');
       } catch (error) {
         toastOn('알 수 없는 오류가 발생했습니다. 다시 시도해주세요.');
       }

@@ -61,10 +61,10 @@ export default function Footer({ backgroundColor = 'default' }: FooterProps) {
           </div>
           <div className={styles.linkWrapper}>
             {footerLinks.map(({ href, title }, index) => (
-              <div key={`footer_${index}`} onClick={handleClick(href)}>
-                <Caption1>{title}</Caption1>
+              <>
+                <Caption1 onClick={handleClick(href)}>{title}</Caption1>
                 {index < footerLinks.length - 1 && <Caption1>•</Caption1>}
-              </div>
+              </>
             ))}
           </div>
         </footer>

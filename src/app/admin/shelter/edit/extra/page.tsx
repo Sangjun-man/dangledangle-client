@@ -16,7 +16,7 @@ import { isEmpty } from 'lodash';
 import useUpdateAdditionalInfo from '@/api/shelter/admin/useUpdateAdditionalInfo';
 import { useRouter } from 'next/navigation';
 import { ShelterAdditionalInfoPayload } from '@/api/shelter/admin/additional-info';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import yup from '@/utils/yup';
 import useHeader from '@/hooks/useHeader';
 import { OutLink } from '@/types/shelter';
@@ -41,6 +41,16 @@ const parkingOptions: RadioOption[] = [
     value: 'false'
   }
 ];
+
+const extraForm: Record<keyof FormValues, string> = {
+  instagram: '',
+  bankName: '',
+  accountNumber: '',
+  donationUrl: '',
+  parkingEnabled: '',
+  parkingNotice: '',
+  notice: ''
+};
 
 const maxNoticeLength = 1000;
 const maxParkingNoticeLength = 300;
@@ -71,6 +81,8 @@ export default function ShelterEditExtraPage() {
     handleSubmit,
     watch,
     reset,
+    setValue,
+    getValues,
     formState: { errors }
   } = useForm<FormValues>({
     mode: 'all',
@@ -81,15 +93,21 @@ export default function ShelterEditExtraPage() {
   const shelterQuery = useShelterInfo();
   const { mutateAsync: update } = useUpdateAdditionalInfo();
   const [loading, loadingOn] = useBooleanState(false);
+  const [edited, setEdited] = useState(false);
 
   const parkingEnabled = watch('parkingEnabled');
   const bankName = watch('bankName');
   const accountNumber = watch('accountNumber');
 
-  const isAccountCompleted = Boolean(accountNumber) !== Boolean(bankName);
+  const isAccountCompleted = Boolean(accountNumber) === Boolean(bankName);
   const isNotError = isEmpty(errors);
 
-  const isSubmittable = isAccountCompleted && isNotError;
+  const isSubmittable = useCallback(() => {
+    const isNotEmpty = Object.values(getValues()).filter(Boolean).length;
+    const result = isAccountCompleted && isNotError && edited && isNotEmpty;
+    return result;
+  }, [isAccountCompleted, isNotError, edited, getValues]);
+
   const accountNumberError = !!(isAccountCompleted && !accountNumber)
     ? {
         message: '계좌번호를 입력해주세요'
@@ -101,22 +119,42 @@ export default function ShelterEditExtraPage() {
       }
     : undefined;
 
+  const handleFormChange = useCallback(
+    (type: keyof FormValues) => (e: any) => {
+      setValue(type, e.currentTarget.value);
+      const check = Object.keys(extraForm).filter(key => {
+        const w = watch(key as keyof FormValues);
+        const v = extraForm[key as keyof FormValues];
+        return w !== v;
+      });
+      setEdited(check.length > 0);
+    },
+    []
+  );
+
   useEffect(() => {
     if (shelterQuery.isSuccess) {
       const data = shelterQuery.data;
-      reset({
+      const edit = {
+        instagram:
+          data.outLinks
+            .find(link => link.outLinkType === 'INSTAGRAM')
+            ?.url.replace(INSTAGRAM_BASE_URL, '') || '',
         parkingEnabled: data.parkingInfo?.parkingEnabled.toString() || '',
         parkingNotice: data.parkingInfo?.parkingNotice || '',
         bankName: data.bankAccount?.bankName || '',
         accountNumber: data.bankAccount?.accountNumber || '',
         notice: data.notice || '',
-        instagram:
-          data.outLinks
-            .find(link => link.outLinkType === 'INSTAGRAM')
-            ?.url.replace(INSTAGRAM_BASE_URL, '') || '',
         donationUrl:
           data.outLinks.find(link => link.outLinkType === 'KAKAOPAY')?.url || ''
-      });
+      };
+      reset(edit);
+      console.log(edit);
+      for (const key in edit) {
+        if (edit[key as keyof FormValues]) {
+          extraForm[key as keyof FormValues] = edit[key as keyof FormValues];
+        }
+      }
     }
   }, [reset, shelterQuery.data, shelterQuery.isSuccess]);
 
@@ -175,6 +213,7 @@ export default function ShelterEditExtraPage() {
           fixedValue={INSTAGRAM_BASE_URL}
           error={errors.instagram}
           {...register('instagram')}
+          onChange={handleFormChange('instagram')}
         />
         <div
           style={{ display: 'flex', flexDirection: 'column', rowGap: '20px' }}
@@ -184,6 +223,7 @@ export default function ShelterEditExtraPage() {
             placeholder="은행명"
             error={errors.bankName || bankNameError}
             {...register('bankName')}
+            onChange={handleFormChange('bankName')}
           />
 
           <TextField
@@ -191,11 +231,13 @@ export default function ShelterEditExtraPage() {
             error={errors.accountNumber || accountNumberError}
             disabled={!bankName}
             {...register('accountNumber')}
+            onChange={handleFormChange('accountNumber')}
           />
           <TextField
             placeholder="카카오페이 코드 송금 링크 입력"
             error={errors.donationUrl}
             {...register('donationUrl')}
+            onChange={handleFormChange('donationUrl')}
           />
           <div>
             <Caption2 color="gray600">
@@ -219,6 +261,7 @@ export default function ShelterEditExtraPage() {
             label="주차 가능 여부"
             options={parkingOptions}
             {...register('parkingEnabled')}
+            onChange={handleFormChange('parkingEnabled')}
           />
           <TextArea
             placeholder="추가 주차 관련 안내 (최대 200자)"
@@ -228,6 +271,7 @@ export default function ShelterEditExtraPage() {
             error={errors.parkingNotice}
             {...register('parkingNotice')}
             defaultValue={watch('parkingNotice')}
+            onChange={handleFormChange('parkingNotice')}
           />
         </div>
         <TextArea
@@ -238,10 +282,11 @@ export default function ShelterEditExtraPage() {
           error={errors.notice}
           {...register('notice')}
           defaultValue={watch('notice')}
+          onChange={handleFormChange('notice')}
         />
       </div>
       <FixedFooter>
-        <Button loading={loading} itemType="submit" disabled={isSubmittable}>
+        <Button loading={loading} itemType="submit" disabled={!isSubmittable()}>
           저장하기
         </Button>
       </FixedFooter>

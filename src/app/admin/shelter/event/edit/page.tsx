@@ -38,6 +38,7 @@ import * as styles from './styles.css';
 import getIterationNotice from './utils/getIterationNotice';
 import getMaxOfIterationEndAt from './utils/getMaxOfIterationEndAt';
 import useWriteVolunteerEvent from '@/api/shelter/admin/useWriteVolunteerEvent';
+import useRouteGuard from '@/hooks/useRouteGuard';
 
 type ChipValues = {
   category: string;
@@ -82,6 +83,7 @@ export default function ShelterEventEditPage({
   searchParams: { id: string };
 }) {
   const router = useRouter();
+  useRouteGuard();
 
   const eventId = useMemo(
     () =>

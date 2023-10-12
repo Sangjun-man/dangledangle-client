@@ -32,7 +32,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { BaseSyntheticEvent, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as styles from './styles.css';
 import getIterationNotice from './utils/getIterationNotice';
@@ -102,6 +102,7 @@ export default function ShelterEventEditPage({
     reset,
     trigger,
     resetField,
+    setValue,
     formState: { errors, isDirty }
   } = useForm<FormValues>({
     mode: 'all',
@@ -162,7 +163,14 @@ export default function ShelterEventEditPage({
     [endAt]
   );
 
-  const handleChangeDate = () => {
+  const handleChangeDate = (e: BaseSyntheticEvent) => {
+    if (e.target.name === 'startAt') {
+      const startAt = moment(e.target.value);
+      setValue(
+        'endAt',
+        formatDatetimeForServer(startAt.add(1, 'hour').toDate(), 'DATETIME')
+      );
+    }
     trigger(['startAt', 'endAt', 'iterationEndAt']);
   };
 

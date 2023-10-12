@@ -42,12 +42,12 @@ export default function useRouteGuard(callback?: () => unknown) {
     } else {
       window.onbeforeunload = null;
       window.onpopstate = null;
-      history.back(); // 'Route guard' state 제거
+      if (history.state === 'Route guard') history.back(); // 'Route guard' state 제거
     }
   }, [onBeforeunload, onPopstate, routable]);
 
   useEffect(() => {
-    history.pushState('Route guard', '');
+    history.pushState('Route guard init', '');
     return () => {
       window.onpopstate = null;
     };

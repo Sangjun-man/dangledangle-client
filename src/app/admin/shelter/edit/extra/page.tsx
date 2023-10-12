@@ -21,6 +21,7 @@ import yup from '@/utils/yup';
 import useHeader from '@/hooks/useHeader';
 import { OutLink } from '@/types/shelter';
 import useBooleanState from '@/hooks/useBooleanState';
+import useRouteGuard from '@/hooks/useRouteGuard';
 
 type FormValues = {
   instagram?: string;
@@ -78,6 +79,7 @@ export default function ShelterEditExtraPage() {
     resolver: yupResolver(schema)
   });
   const router = useRouter();
+  const { setRoutable } = useRouteGuard();
   const shelterQuery = useShelterInfo();
   const { mutateAsync: update } = useUpdateAdditionalInfo();
   const [loading, loadingOn] = useBooleanState(false);
@@ -102,6 +104,11 @@ export default function ShelterEditExtraPage() {
           message: '은행명를 입력해주세요'
         }
       : undefined;
+
+  useEffect(() => {
+    if (isSubmittable) setRoutable(false);
+    else setRoutable(true);
+  }, [isSubmittable, setRoutable]);
 
   useEffect(() => {
     if (shelterQuery.isSuccess) {

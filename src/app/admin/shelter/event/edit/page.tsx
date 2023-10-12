@@ -4,8 +4,7 @@ import useAdminVolunteerEvent from '@/api/shelter/admin/useAdminVolunteerEvent';
 import useUpdateVolunteerEvent from '@/api/shelter/admin/useUpdateVolunteerEvent';
 import {
   PutVolunteerEventPayload,
-  VolunteerEventPayload,
-  post
+  VolunteerEventPayload
 } from '@/api/shelter/admin/volunteer-event';
 import Button from '@/components/common/Button/Button';
 import ChipInput from '@/components/common/ChipInput/ChipInput';
@@ -26,7 +25,7 @@ import {
   VolunteerEventCategory
 } from '@/constants/volunteerEvent';
 import useHeader from '@/hooks/useHeader';
-import { formatDatetimeForServer } from '@/utils/timeConvert';
+import { formatDatetimeForServer, getEndOfMonth } from '@/utils/timeConvert';
 import yup from '@/utils/yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
@@ -83,7 +82,7 @@ export default function ShelterEventEditPage({
   searchParams: { id: string };
 }) {
   const router = useRouter();
-  useRouteGuard();
+  const { setRoutable } = useRouteGuard();
 
   const eventId = useMemo(
     () =>
@@ -172,6 +171,10 @@ export default function ShelterEventEditPage({
         'endAt',
         formatDatetimeForServer(startAt.add(1, 'hour').toDate(), 'DATETIME')
       );
+      setValue(
+        'iterationEndAt',
+        formatDatetimeForServer(getEndOfMonth(startAt).toDate(), 'DATE') as any
+      );
     }
     trigger(['startAt', 'endAt', 'iterationEndAt']);
   };
@@ -242,6 +245,7 @@ export default function ShelterEventEditPage({
       const payload = getPostPayload(values);
       await postEvent(payload);
     }
+    setRoutable(true);
     router.back();
   };
 
@@ -329,7 +333,6 @@ export default function ShelterEventEditPage({
           type="date"
           min={minIterationEndAt}
           max={getMaxOfIterationEndAt()}
-          defaultValue={getMaxOfIterationEndAt()}
           {...register('iterationEndAt', { onChange: handleChangeDate })}
           error={errors.iterationEndAt}
         />

@@ -112,7 +112,6 @@ export default function ShelterEditRequiredPage() {
 
   const onSubmit = useCallback(
     async (data: FormValues) => {
-      console.log('🔸 → onSubmit → data:', data);
       if (!shelterQuery.isSuccess || !searchedAddress) return;
       loadingOn();
       const payload: ShelterEssentialInfoPayload = {
@@ -123,8 +122,8 @@ export default function ShelterEditRequiredPage() {
           addressDetail: data.addressDetail
         }
       };
-      await update({ payload });
       setRoutable(true);
+      await update({ payload });
       router.replace('/admin/shelter/edit');
     },
     [

@@ -21,7 +21,6 @@ export default function useUpdateEssentialInfo(
     ({ payload }) => put(payload),
     {
       onSuccess: (data, variables, context) => {
-        console.log('invalidate');
         options?.onSuccess && options.onSuccess(data, variables, context);
         queryClient.invalidateQueries(shelterKey.info());
       },

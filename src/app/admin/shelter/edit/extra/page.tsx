@@ -165,12 +165,10 @@ export default function ShelterEditExtraPage() {
 
   const onSubmit = useCallback(
     async (data: FormValues) => {
-      console.log('🔸 → onSubmit → data:', data);
       loadingOn();
       const payload = getPayload(data);
-      console.log('🔸 → ShelterEditExtraPage → payload:', payload);
-      await update({ payload });
       setRoutable(true);
+      await update({ payload });
       router.replace('/admin/shelter/edit' + window.location.hash);
     },
     [getPayload, loadingOn, router, setRoutable, update]

@@ -1,12 +1,28 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import useDialog from './useDialog';
-import { useRouter } from 'next/navigation';
 
-// 브라우저 뒤로가기 막기
+const GUARD_STATE = 'Route guard init';
+
+const onBeforeunload = (event: BeforeUnloadEvent) => {
+  // 브라우저 새로고침, 닫기 방지
+  event.preventDefault();
+  event.returnValue = '';
+};
+
+/**
+ * 유저의 의도치않은 페이지 이탈을 방지
+ * @param callback 브라우저 뒤로가기 동작 대신 수행할 함수
+ * @returns setRoutable로 온오프 가능
+ * @example ```js
+ *  const onSubmit = () => {
+ *      setRoutable(true);
+ *      router.back();
+ *  }
+ * ```
+ */
 export default function useRouteGuard(callback?: () => unknown) {
-  const [routable, setRoutable] = useState(false);
   const { dialogOn, dialogOff } = useDialog();
-  const router = useRouter();
+
   const defaultCallback = useCallback(() => {
     dialogOn({
       message: '앗! 이대로 나가면 입력하신 정보가 모두 사라져요!',
@@ -14,44 +30,48 @@ export default function useRouteGuard(callback?: () => unknown) {
         text: '나가기',
         variant: 'filled',
         onClick: () => {
-          setRoutable(true);
+          window.onbeforeunload = null;
+          window.onpopstate = null;
+          history.back();
           dialogOff();
-          router.back();
         }
       },
       close: {}
     });
-  }, [dialogOff, dialogOn, router]);
-
-  const onBeforeunload = useCallback((event: BeforeUnloadEvent) => {
-    event.preventDefault();
-    event.returnValue = '';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onPopstate = useCallback(() => {
-    history.pushState('Route guard', '');
-    callback ? callback() : defaultCallback();
-  }, [callback, defaultCallback]);
+  const setRoutable = useCallback(
+    (routable: boolean) => {
+      const onPopstate = (e: PopStateEvent) => {
+        // 브라우저 뒤로가기 방지
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        callback ? callback() : defaultCallback();
+        return;
+      };
+
+      if (!routable) {
+        history.pushState(GUARD_STATE, '');
+        window.onbeforeunload = onBeforeunload;
+        window.onpopstate = onPopstate;
+      } else {
+        window.onbeforeunload = null;
+        window.onpopstate = null;
+        if (history.state === GUARD_STATE) history.back(); // GUARD_STATE state 제거
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [callback]
+  );
 
   useEffect(() => {
-    if (!routable) {
-      // 브라우저 새로고침 또는 닫기 방지
-      window.onbeforeunload = onBeforeunload;
-      // 브라우저 뒤로가기 방지
-      window.onpopstate = onPopstate;
-    } else {
-      window.onbeforeunload = null;
-      window.onpopstate = null;
-      if (history.state === 'Route guard') history.back(); // 'Route guard' state 제거
-    }
-  }, [onBeforeunload, onPopstate, routable]);
-
-  useEffect(() => {
-    history.pushState('Route guard init', '');
+    setRoutable(false);
     return () => {
       window.onpopstate = null;
+      window.onbeforeunload = null;
     };
-  }, []);
+  }, [setRoutable]);
 
   return { setRoutable };
 }

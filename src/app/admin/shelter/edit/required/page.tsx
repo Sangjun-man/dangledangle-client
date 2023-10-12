@@ -129,10 +129,7 @@ export default function ShelterEditRequiredPage() {
     [loadingOn, router, searchedAddress, shelterQuery.isSuccess, update]
   );
 
-  const isSubmittable = useMemo(
-    () => isDirty && isEmpty(errors) && searchedAddress,
-    [errors, isDirty, searchedAddress]
-  );
+  const isSubmittable = isDirty && isEmpty(errors) && Boolean(searchedAddress);
 
   useEffect(() => {
     if (isSubmittable) setRoutable(false);

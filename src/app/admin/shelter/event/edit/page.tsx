@@ -266,6 +266,7 @@ export default function ShelterEventEditPage({
         placeholder="봉사 일정에 대한 설명을 작성해주세요."
         {...register('description')}
         error={errors.description}
+        defaultValue={watch('description')}
         height="128px"
         maxLength={300}
       />

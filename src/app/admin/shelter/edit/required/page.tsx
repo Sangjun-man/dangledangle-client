@@ -124,9 +124,17 @@ export default function ShelterEditRequiredPage() {
         }
       };
       await update({ payload });
+      setRoutable(true);
       router.replace('/admin/shelter/edit');
     },
-    [loadingOn, router, searchedAddress, shelterQuery.isSuccess, update]
+    [
+      loadingOn,
+      router,
+      searchedAddress,
+      setRoutable,
+      shelterQuery.isSuccess,
+      update
+    ]
   );
 
   const isSubmittable = isDirty && isEmpty(errors) && Boolean(searchedAddress);

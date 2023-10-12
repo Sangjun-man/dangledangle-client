@@ -1,6 +1,6 @@
 'use client';
 import ImageUploader from '@/components/common/ImageUploader/ImageUploader';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import EditMenu from '@/components/shelter-edit/EditMenu/EditMenu';
 import Badge from '@/components/common/Badge/Badge';
 import Divider from '@/components/common/Divider/Divider';
@@ -107,14 +107,17 @@ export default function ShelterEditPage() {
     setRegisterCompleted(true);
   };
 
-  const MenuBadge = (status: ReturnType<typeof getAdditionalInfoStatus>) => (
-    <Badge type={status === 'completed' ? 'success' : 'gray'}>
-      {status === 'completed'
-        ? '입력 완료'
-        : status === 'in_progress'
-        ? '입력중'
-        : '미입력'}
-    </Badge>
+  const MenuBadge = useCallback(
+    (status: ReturnType<typeof getAdditionalInfoStatus>) => (
+      <Badge type={status === 'completed' ? 'success' : 'gray'}>
+        {status === 'completed'
+          ? '입력 완료'
+          : status === 'in_progress'
+          ? '입력중'
+          : '미입력'}
+      </Badge>
+    ),
+    []
   );
 
   if (registerCompleted) {

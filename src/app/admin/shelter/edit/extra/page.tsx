@@ -71,7 +71,7 @@ export default function ShelterEditExtraPage() {
     handleSubmit,
     watch,
     reset,
-    formState: { errors }
+    formState: { errors, isDirty }
   } = useForm<FormValues>({
     mode: 'all',
     reValidateMode: 'onChange',
@@ -86,20 +86,22 @@ export default function ShelterEditExtraPage() {
   const bankName = watch('bankName');
   const accountNumber = watch('accountNumber');
 
-  const isAccountCompleted = Boolean(accountNumber) !== Boolean(bankName);
+  const isAccountCompleted = Boolean(accountNumber) === Boolean(bankName);
   const isNotError = isEmpty(errors);
 
-  const isSubmittable = isAccountCompleted && isNotError;
-  const accountNumberError = !!(isAccountCompleted && !accountNumber)
-    ? {
-        message: '계좌번호를 입력해주세요'
-      }
-    : undefined;
-  const bankNameError = !!(isAccountCompleted && !bankName)
-    ? {
-        message: '은행명를 입력해주세요'
-      }
-    : undefined;
+  const isSubmittable = isAccountCompleted && isNotError && isDirty;
+  const accountNumberError =
+    !isAccountCompleted && !accountNumber
+      ? {
+          message: '계좌번호를 입력해주세요'
+        }
+      : undefined;
+  const bankNameError =
+    !isAccountCompleted && !bankName
+      ? {
+          message: '은행명를 입력해주세요'
+        }
+      : undefined;
 
   useEffect(() => {
     if (shelterQuery.isSuccess) {
@@ -241,7 +243,7 @@ export default function ShelterEditExtraPage() {
         />
       </div>
       <FixedFooter>
-        <Button loading={loading} itemType="submit" disabled={isSubmittable}>
+        <Button loading={loading} itemType="submit" disabled={!isSubmittable}>
           저장하기
         </Button>
       </FixedFooter>

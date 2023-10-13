@@ -59,12 +59,14 @@ export default function Footer({ backgroundColor = 'default' }: FooterProps) {
           <div>
             <Daenggle height={22} width={54} />
           </div>
-          <div className={styles.linkWrapper}>
+          <div style={{ display: 'flex' }}>
             {footerLinks.map(({ href, title }, index) => (
-              <>
+              <div key={title} className={styles.footerContent}>
                 <Caption1 onClick={handleClick(href)}>{title}</Caption1>
-                {index < footerLinks.length - 1 && <Caption1>•</Caption1>}
-              </>
+                {index < footerLinks.length - 1 && (
+                  <Caption1 className={styles.dot}>•</Caption1>
+                )}
+              </div>
             ))}
           </div>
         </footer>

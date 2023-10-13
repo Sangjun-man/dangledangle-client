@@ -68,6 +68,8 @@ export default function DangleCalendar({
         tileContent={handleDotIcon}
         minDetail="month" // 상단 네비게이션에서 '월' 단위만 보이게 설정
         maxDetail="month" // 상단 네비게이션에서 '월' 단위만 보이게 설정
+        navigationLabel={({ date }) => moment(date).format('YYYY.MM')}
+        calendarType="US"
       />
     </div>
   );

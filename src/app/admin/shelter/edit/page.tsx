@@ -1,6 +1,6 @@
 'use client';
 import ImageUploader from '@/components/common/ImageUploader/ImageUploader';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import EditMenu from '@/components/shelter-edit/EditMenu/EditMenu';
 import Badge from '@/components/common/Badge/Badge';
 import Divider from '@/components/common/Divider/Divider';
@@ -37,10 +37,23 @@ export default function ShelterEditPage() {
   const [registerCompleted, setRegisterCompleted] = useState<Boolean>(false);
 
   const shelterQuery = useShelterInfo();
-  const animalsQuery = useObservationAnimalListAtHome(
-    { shelterId: shelterQuery.data?.id || -1, page: 0 },
-    { enabled: Boolean(shelterQuery.data?.id) }
-  );
+  const { data, fetchNextPage, hasNextPage, isSuccess } =
+    useObservationAnimalListAtHome(
+      { shelterId: shelterQuery.data?.id || -1 },
+      { enabled: Boolean(shelterQuery.data?.id) }
+    );
+  const animalLists = useMemo(() => {
+    return data?.pages.reduce((acc: ObservationAnimal[], page) => {
+      return [...acc, ...page.content];
+    }, []);
+  }, [data?.pages]);
+
+  useEffect(() => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, fetchNextPage]);
+
   const { mutateAsync: deleteAnimal } = useDeleteObservationAnimal();
   const { mutateAsync: updateImage } = useUpdateImage();
 
@@ -74,8 +87,8 @@ export default function ShelterEditPage() {
   };
 
   const handleClickEdit = (idx: number) => {
-    if (animalsQuery.data) {
-      setTargetAnimal(animalsQuery.data.content[idx]);
+    if (animalLists) {
+      setTargetAnimal(animalLists[idx]);
       openDialog();
     }
   };
@@ -172,12 +185,10 @@ export default function ShelterEditPage() {
           titleSuffix={
             <H4
               color={
-                animalsQuery.data && animalsQuery.data.content.length > 0
-                  ? 'primary300'
-                  : 'gray400'
+                animalLists && animalLists.length > 0 ? 'primary300' : 'gray400'
               }
             >
-              {animalsQuery.data?.content.length || 0}
+              {animalLists?.length || 0}
             </H4>
           }
         />
@@ -189,9 +200,9 @@ export default function ShelterEditPage() {
         >
           동물 추가하기
         </Button>
-        {animalsQuery.isSuccess && (
+        {isSuccess && animalLists && (
           <div className={styles.animalList}>
-            {animalsQuery.data.content.map((animal, idx) => (
+            {animalLists.map((animal, idx) => (
               <AnimalCard
                 key={animal.id}
                 data={animal}

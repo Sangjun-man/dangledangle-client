@@ -9,12 +9,20 @@ import EmphasizedTitle, {
 import { Body3, Body4, H4 } from '@/components/common/Typography';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import * as styles from './styles.css';
+import useKeyboardActive from '@/hooks/useKeyboardActive';
 
 export default function Sure() {
   const router = useRouter();
   const [checked, setChecked] = useState(false);
+  const keyboardActive = useKeyboardActive();
+
+  const handleClick = useCallback(() => {
+    keyboardActive();
+    router.push('/register/shelter/step');
+  }, []);
+
   return (
     <>
       <div
@@ -71,7 +79,7 @@ export default function Sure() {
         />
       </div>
       <Button
-        onClick={() => router.push('/register/shelter/step')}
+        onClick={handleClick}
         disabled={!checked}
         style={{ marginTop: '22px', marginBottom: '32px' }}
       >

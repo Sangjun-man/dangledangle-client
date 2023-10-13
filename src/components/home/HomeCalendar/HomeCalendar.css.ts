@@ -9,6 +9,15 @@ export const fullWidth = style({
   paddingRight: GLOBAL_PADDING_X + 'px'
 });
 
+export const calendar = style({
+  transition: 'height 0.8s ease',
+  overflowY: 'hidden'
+});
+
+export const hidden = style({
+  height: '0 !important'
+});
+
 export const calendarFooter = style([
   {
     display: 'flex',
@@ -17,15 +26,30 @@ export const calendarFooter = style([
   }
 ]);
 
+export const fakeHeader = style([
+  fullWidth,
+  {
+    height: '56px',
+    backgroundColor: palette.white,
+    position: 'absolute',
+    top: 0
+  }
+]);
 export const foldedHeader = style([
   fullWidth,
   {
-    position: 'relative',
+    transition: 'opacity 1s ease',
+    position: 'absolute',
+    top: 0,
     padding: `20px ${GLOBAL_PADDING_X}px 14px`,
     textAlign: 'center',
-    backgroundColor: palette.white
+    opacity: 1
   }
 ]);
+
+export const hiddenFoldedHeader = style({
+  opacity: 0
+});
 
 export const toggleItem = style({
   display: 'flex',

@@ -10,13 +10,10 @@ export const fullWidth = style({
 });
 
 export const calendarFooter = style([
-  fullWidth,
   {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: palette.white,
-    paddingBottom: 20
+    alignItems: 'center'
   }
 ]);
 

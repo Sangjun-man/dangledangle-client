@@ -1,15 +1,22 @@
 import { palette } from '@/styles/color';
-import { GLOBAL_PADDING_X } from '@/styles/global.css';
+import { GLOBAL_PADDING_X, expandGlobalPadding } from '@/styles/global.css';
 import { globalStyle, style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 
+export const container = style([
+  expandGlobalPadding,
+  {
+    backgroundColor: palette.white
+  }
+]);
 export const calendar = style({
   width: '100%',
-  margin: 'auto',
-  backgroundColor: palette.white,
-  color: palette.gray900,
   transform: `translateX(${-GLOBAL_PADDING_X}px)`,
-  padding: '20px'
+  padding: `${GLOBAL_PADDING_X}px`
+});
+
+export const footer = style({
+  transform: 'translateY(-20px)'
 });
 
 export const dotWrapper = style({

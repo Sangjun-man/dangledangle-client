@@ -74,21 +74,26 @@ const HomeCalendar: React.FC<HomeCalendarProps> = ({
             mark={mark}
             onChange={onClickDate}
             onChangeMonth={onClickDate}
+            footer={
+              <div className={styles.calendarFooter}>
+                <div className={styles.toggleItem} onClick={onChangeBookmark}>
+                  {dangle_role !== 'SHELTER' && (
+                    <>
+                      <CheckBox value={bookmark} onClick={() => null} />
+                      <Caption3>즐겨찾기한 보호소만 보기</Caption3>
+                    </>
+                  )}
+                </div>
+                {/* 최소 한 번 접힌 적이 있을 때만 렌더링 */}
+                {hasFolded && (
+                  <FoldToggle
+                    isFolded={false}
+                    onClick={() => setIsFolded(true)}
+                  />
+                )}
+              </div>
+            }
           />
-          <div className={styles.calendarFooter}>
-            <div className={styles.toggleItem} onClick={onChangeBookmark}>
-              {dangle_role !== 'SHELTER' && (
-                <>
-                  <CheckBox value={bookmark} onClick={() => null} />
-                  <Caption3>즐겨찾기한 보호소만 보기</Caption3>
-                </>
-              )}
-            </div>
-            {/* 최소 한 번 접힌 적이 있을 때만 렌더링 */}
-            {hasFolded && (
-              <FoldToggle isFolded={false} onClick={() => setIsFolded(true)} />
-            )}
-          </div>
         </div>
       )}
     </div>

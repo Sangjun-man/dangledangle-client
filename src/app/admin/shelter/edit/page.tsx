@@ -26,8 +26,8 @@ import useObservationAnimalListAtHome from '@/api/shelter/{shelterId}/useObserva
 
 export default function ShelterEditPage() {
   useHeader({ title: '보호소 정보' });
-  const { onChangeImage, isUploading } = useImageUploader();
-  const [uploadError, setUploadError] = useState<boolean>(false);
+  const { onChangeImage, isUploading, uploadError } = useImageUploader();
+  const [postError, setPostError] = useState<boolean>(false);
   const router = useRouter();
 
   const [isOpened, openDialog, closeDialog] = useBooleanState(false);
@@ -63,7 +63,7 @@ export default function ShelterEditPage() {
         if (!url) throw Error();
         await updateImage(url);
       } catch {
-        setUploadError(true);
+        setPostError(true);
         shelterQuery.refetch();
       }
     });
@@ -147,7 +147,7 @@ export default function ShelterEditPage() {
           defaultImage="shelter"
           size="96"
           loading={isUploading}
-          error={uploadError}
+          error={uploadError || postError}
           onChangeCallback={handleChangeImage}
         />
       </section>

@@ -6,7 +6,8 @@ import { recipe } from '@vanilla-extract/recipes';
 export const container = style([
   expandGlobalPadding,
   {
-    backgroundColor: palette.white
+    backgroundColor: palette.white,
+    overflowX: 'hidden'
   }
 ]);
 export const calendar = style({

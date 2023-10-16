@@ -36,7 +36,12 @@ export default function useRouteGuard(callback?: () => unknown) {
           dialogOff();
         }
       },
-      close: {}
+      close: {
+        onClick: () => {
+          setRoutable(false);
+          dialogOff();
+        }
+      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -46,8 +51,8 @@ export default function useRouteGuard(callback?: () => unknown) {
       const onPopstate = (e: PopStateEvent) => {
         // 브라우저 뒤로가기 방지
         e.preventDefault();
-        e.stopImmediatePropagation();
         callback ? callback() : defaultCallback();
+        history.back();
         return;
       };
 

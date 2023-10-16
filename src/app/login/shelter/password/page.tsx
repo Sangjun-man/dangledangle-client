@@ -17,6 +17,7 @@ import * as styles from './styles.css';
 import FormProvider from '@/components/common/FormProvider/FormProvider';
 import { handlePhoneNumberChange, removeDash } from '@/utils/formatInputs';
 import { fowardPwdLink } from '@/api/shelter/auth/login';
+import { ApiErrorResponse } from '@/types/apiTypes';
 
 const helperMessage = `등록한 파트너 계정의 이메일을 입력해주세요.
 비밀번호를 재설정할 수 있는 링크를 보내드립니다.`;
@@ -64,19 +65,26 @@ export default function ShelterPassword() {
     }
   }, [emailValue, debouncedValidator]);
 
-  const handleSendPassLink = useCallback(async (data: FindPassFormValue) => {
-    const newData = {
-      ...data,
-      phoneNumber: removeDash(data.phoneNumber)
-    };
+  const handleSendPassLink = useCallback(
+    async (data: FindPassFormValue) => {
+      const newData = {
+        ...data,
+        phoneNumber: removeDash(data.phoneNumber)
+      };
 
-    try {
-      await fowardPwdLink(newData);
-      toastOn('비밀번호 재설정 링크가 발송되었습니다.');
-    } catch (error) {
-      toastOn('알 수 없는 오류가 발생했습니다. 다시 시도해주세요.');
-    }
-  }, []);
+      try {
+        await fowardPwdLink(newData);
+        toastOn('비밀번호 재설정 링크가 발송되었습니다.');
+      } catch (e) {
+        if ((e as ApiErrorResponse).exceptionCode === 'STORAGE-001') {
+          toastOn('등록하신 핸드폰 번호를 다시 확인해주세요.');
+        } else {
+          toastOn('알 수 없는 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+      }
+    },
+    [toastOn]
+  );
 
   return (
     <>
@@ -108,7 +116,6 @@ export default function ShelterPassword() {
           placeholder="등록하신 핸드폰 번호를 입력해주세요. (-제외)"
           {...register('phoneNumber', { onChange: handlePhoneNumberChange })}
           error={errors.phoneNumber}
-          autoFocus
         />
         <Button
           style={{ marginTop: '47px' }}

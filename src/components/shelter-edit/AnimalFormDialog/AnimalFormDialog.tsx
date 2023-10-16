@@ -79,6 +79,7 @@ export const AnimalForm: React.FC<AnimalFormProps> = ({
   const {
     onChangeImage,
     isUploading,
+    uploadError,
     src: profileImageUrl,
     setSrc: setProfileImageUrl
   } = useImageUploader();
@@ -162,6 +163,8 @@ export const AnimalForm: React.FC<AnimalFormProps> = ({
         shape="square"
         defaultImage="puppy"
         size="80"
+        loading={isUploading}
+        error={uploadError}
         onChangeCallback={onChangeImage}
       />
 

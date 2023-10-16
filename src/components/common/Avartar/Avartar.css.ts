@@ -1,5 +1,5 @@
 import { palette } from '@/styles/color';
-import { createVar } from '@vanilla-extract/css';
+import { createVar, style } from '@vanilla-extract/css';
 import { RecipeVariants, recipe } from '@vanilla-extract/recipes';
 
 export const size = createVar('size');
@@ -35,6 +35,13 @@ export const avartar = recipe({
       }
     }
   }
+});
+export const imageWrapper = style({
+  position: 'relative'
+});
+
+export const imageChildren = style({
+  position: 'absolute'
 });
 
 type AvartarVariants = RecipeVariants<typeof avartar>;

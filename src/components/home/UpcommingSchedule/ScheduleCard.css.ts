@@ -53,10 +53,10 @@ export const timeInfo = style({
   display: 'flex',
   flexDirection: 'column',
   rowGap: '2px',
-  color: `white`,
+  color: palette.gray900,
   selectors: {
     [`${container}:first-child &`]: {
-      color: `white`
+      color: palette.white
     }
   }
 });

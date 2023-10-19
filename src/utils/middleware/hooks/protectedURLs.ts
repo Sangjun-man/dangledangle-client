@@ -18,11 +18,11 @@ export default function protectedURLs({
 
   const { pathname, search, origin, basePath } = req.nextUrl;
   if (!accessToken) {
-    const noRedirectForEditExtra = req.nextUrl.pathname.startsWith(
+    const noRedirectForEditExtra = pathname.startsWith(
       '/admin/shelter/edit/extra'
     );
 
-    if (!noRedirectForEditExtra && req.nextUrl.pathname.startsWith('/admin')) {
+    if (!noRedirectForEditExtra && pathname.startsWith('/admin')) {
       if (!req.cookies.get(COOKIE_REDIRECT_URL)?.value) {
         requestHeaders.append(
           'Set-Cookie',
@@ -38,7 +38,7 @@ export default function protectedURLs({
   }
 
   if (accessToken) {
-    if (req.nextUrl.pathname.startsWith('/logout?force=true')) {
+    if (pathname.startsWith('/logout') && search === '?force=true') {
       const response = NextResponse.redirect(`${origin}/login`);
       response.cookies.delete(COOKIE_ACCESS_TOKEN_KEY);
       response.cookies.delete(COOKIE_REFRESH_TOKEN_KEY);
@@ -48,7 +48,7 @@ export default function protectedURLs({
       };
     }
 
-    if (req.nextUrl.pathname.startsWith('/login')) {
+    if (pathname.startsWith('/login')) {
       const { origin, basePath } = req.nextUrl;
 
       const mainReturnUrl = new URL(`${basePath}`, origin);

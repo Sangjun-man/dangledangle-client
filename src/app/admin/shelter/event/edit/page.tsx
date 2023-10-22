@@ -171,13 +171,23 @@ export default function ShelterEventEditPage({
         'endAt',
         formatDatetimeForServer(startAt.add(1, 'hour').toDate(), 'DATETIME')
       );
-      setValue(
-        'iterationEndAt',
-        formatDatetimeForServer(getEndOfMonth(startAt).toDate(), 'DATE') as any
-      );
     }
-    trigger(['startAt', 'endAt', 'iterationEndAt']);
+
+    trigger(['startAt', 'endAt']);
   };
+
+  useEffect(() => {
+    let iterationEndAt = getEndOfMonth(endAt);
+    if (!iterationEndAt) return;
+    if (moment(endAt).date() === iterationEndAt.date()) {
+      iterationEndAt = getEndOfMonth(iterationEndAt.add(1, 'd'));
+    }
+    setValue(
+      'iterationEndAt',
+      formatDatetimeForServer(iterationEndAt.toDate(), 'DATE') as any
+    );
+    trigger(['iterationEndAt']);
+  }, [endAt, setValue, trigger]);
 
   const handleChipInput = (name: string, value: string) => {
     setChipInput({ ...chipInput, [name]: value });
@@ -192,9 +202,7 @@ export default function ShelterEventEditPage({
   }, [startAt, chipInput.iterationCycle]);
 
   useEffect(() => {
-    if (!chipInput.iterationCycle) {
-      resetField('iterationEndAt');
-    } else {
+    if (chipInput.iterationCycle) {
       trigger('iterationEndAt');
     }
   }, [chipInput.iterationCycle, resetField, trigger]);

@@ -35,7 +35,7 @@ import { BaseSyntheticEvent, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as styles from './styles.css';
 import getIterationNotice from './utils/getIterationNotice';
-import getMaxOfIterationEndAt from './utils/getMaxOfIterationEndAt';
+import { getMaxOfIterationEndAt, getMaxOfDateInput } from './utils/getMaxDate';
 import useWriteVolunteerEvent from '@/api/shelter/admin/useWriteVolunteerEvent';
 import useRouteGuard from '@/hooks/useRouteGuard';
 
@@ -297,6 +297,7 @@ export default function ShelterEventEditPage({
         type="datetime-local"
         required
         min={minStartAt}
+        max={getMaxOfDateInput()}
         {...register('startAt', {
           valueAsDate: true,
           onChange: handleChangeDate
@@ -308,6 +309,7 @@ export default function ShelterEventEditPage({
         type="datetime-local"
         required
         min={minEndAt}
+        max={getMaxOfDateInput()}
         {...register('endAt', {
           valueAsDate: true,
           onChange: handleChangeDate

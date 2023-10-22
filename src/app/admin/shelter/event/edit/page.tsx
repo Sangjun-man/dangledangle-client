@@ -246,6 +246,7 @@ export default function ShelterEventEditPage({
   const { mutateAsync: postEvent } = useWriteVolunteerEvent();
 
   const onSubmit = async (values: FormValues) => {
+    setRoutable(true);
     if (initialData) {
       const payload = getPutPayload(values);
       await putEvent({ eventId, ...payload });
@@ -253,7 +254,6 @@ export default function ShelterEventEditPage({
       const payload = getPostPayload(values);
       await postEvent(payload);
     }
-    setRoutable(true);
     router.back();
   };
 

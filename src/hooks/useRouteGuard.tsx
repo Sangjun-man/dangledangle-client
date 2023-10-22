@@ -30,8 +30,7 @@ export default function useRouteGuard(callback?: () => unknown) {
         text: '나가기',
         variant: 'filled',
         onClick: () => {
-          window.onbeforeunload = null;
-          window.onpopstate = null;
+          setRoutable(true);
           history.back();
           dialogOff();
         }
@@ -46,16 +45,15 @@ export default function useRouteGuard(callback?: () => unknown) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const onPopstate = (e: PopStateEvent) => {
+    // 브라우저 뒤로가기 방지
+    e.preventDefault();
+    callback ? callback() : defaultCallback();
+    return;
+  };
+
   const setRoutable = useCallback(
     (routable: boolean) => {
-      const onPopstate = (e: PopStateEvent) => {
-        // 브라우저 뒤로가기 방지
-        e.preventDefault();
-        callback ? callback() : defaultCallback();
-        history.back();
-        return;
-      };
-
       if (!routable) {
         history.pushState(GUARD_STATE, '');
         window.onbeforeunload = onBeforeunload;

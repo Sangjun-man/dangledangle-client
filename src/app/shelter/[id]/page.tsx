@@ -29,7 +29,10 @@ export default async function ShelterMainPage({
           profileImageUrl={shelterHomeInfo.profileImageUrl}
           bookMarked={shelterHomeInfo.bookMarked}
         />
-        <Description description={shelterHomeInfo.description} />
+        <Description
+          shelterId={shelterId}
+          description={shelterHomeInfo.description}
+        />
       </ContainerWithStickyHeader>
 
       <ShelterHomeTabs shelterId={shelterId} />

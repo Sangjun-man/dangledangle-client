@@ -6,7 +6,7 @@ import { Fragment } from 'react';
  * @returns str에 \n을 <br/> 태그로 대치하여 렌더링한다.
  */
 export default function breakLine(str: string) {
-  const sentences = str.split('\n');
+  const sentences = str.trim().split('\n');
 
   return (
     <>

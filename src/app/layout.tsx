@@ -14,7 +14,6 @@ import { cookies } from 'next/headers';
 import SafariBackGround from '@/components/global/Meta/SafariBackGround';
 
 export const metadata = {
-  metadataBase: new URL('https://dangle.co.kr'),
   title: '댕글댕글',
   description: '더 나은 세상을 만들어봐요!',
   openGraph: {

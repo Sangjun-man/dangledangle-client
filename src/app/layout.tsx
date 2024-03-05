@@ -14,7 +14,10 @@ import { cookies } from 'next/headers';
 import SafariBackGround from '@/components/global/Meta/SafariBackGround';
 
 export const metadata = {
-  title: '댕글댕글',
+  title: {
+    template: '%s | 댕글댕글',
+    default: '댕글댕글'
+  },
   description: '더 나은 세상을 만들어봐요!',
   openGraph: {
     title: '댕글댕글',
